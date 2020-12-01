@@ -12,6 +12,13 @@ module.exports = {
         publicPath: '/',
         path: path.resolve(__dirname, 'dist')
     },
+    resolve: {
+        alias: {
+            pages: path.resolve(__dirname, 'src/pages/'),
+            utils: path.resolve(__dirname, 'src/utils'),
+            api: path.resolve(__dirname, 'src/api'),
+        }
+    },
     module: {
         //配置loader
         rules: [
@@ -47,7 +54,7 @@ module.exports = {
                     options: {
                         //presets: ['env', 'react'],
                         presets: ['env', 'es2015', 'react', 'stage-3'],
-                        plugins: [["import", { "libraryName": "antd", "libraryDirectory": "es", "style":true }]]
+                        plugins: [["import", { "libraryName": "antd", "libraryDirectory": "es", "style": true }]]
                     }
                 }
             },
@@ -55,20 +62,20 @@ module.exports = {
                 test: /\.less$/,
                 use: [{
                     loader: 'style-loader',
-                  }, {
+                }, {
                     loader: 'css-loader', // translates CSS into CommonJS
-                  }, {
+                }, {
                     loader: 'less-loader', // compiles Less to CSS
-                   options: {
-                     lessOptions: { // 如果使用less-loader@5，请移除 lessOptions 这一级直接配置选项。
-                       modifyVars: {
-                         'primary-color': '#1DA57A',
-                         'link-color': '#1DA57A',
-                         'border-radius-base': '2px',
-                       },
-                       javascriptEnabled: true,
-                     },
-                   },
+                    options: {
+                        lessOptions: { // 如果使用less-loader@5，请移除 lessOptions 这一级直接配置选项。
+                            modifyVars: {
+                                'primary-color': '#1DA57A',
+                                'link-color': '#1DA57A',
+                                'border-radius-base': '2px',
+                            },
+                            javascriptEnabled: true,
+                        },
+                    },
                 }]
             }
         ]

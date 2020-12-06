@@ -1,11 +1,12 @@
 //目标：生成一个对象，这个对象的每一个属性名是一个方法名，对应的属性值是一个api方法的调用
 //eg:  {handleChange:()=>{}}
-import { Result } from 'antd'
 import axios from 'axios'
 
 //依据配置文件来生成对象
-import { actionCreator } from '../pages/login/store'
 import { SERVER, VERSION, API_CONFIG } from './config'
+
+import { goLogin, removeUsername } from 'utils'
+
 
 const getApiObj = (apiConfig) => {
     let apiObj = {}
@@ -28,7 +29,15 @@ const request = (url, method, data) => {
         }
         axios(options).then(result => {
             const data = result.data
-            resolve(data)
+            if (data.code == 10) {
+                //没有权限
+                removeUsername()
+                goLogin()
+                resolve('没有权限')
+            } else {
+                resolve(data)
+            }
+
         }).catch(e => {
             reject(e)
         })

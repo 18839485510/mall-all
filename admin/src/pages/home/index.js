@@ -1,63 +1,66 @@
 import React, { Component } from 'react'
-import { Layout, Menu, Breadcrumb, Dropdown } from 'antd';
-import { DownOutlined,LogoutOutlined,HomeOutlined,UserAddOutlined,MenuUnfoldOutlined } from '@ant-design/icons';
+import { Layout, Breadcrumb, Card, Row, Col } from 'antd';
+import { connect } from 'react-redux'
 
-import { getUsername } from 'utils'
+const { Content } = Layout;
+
 import './index.less'
-const { SubMenu } = Menu;
-const { Header, Content, Sider } = Layout;
+import CustomLayout from 'components/custom-layout'
+import { actionCreator } from './store';
 class Home extends Component {
+    constructor(props) {
+        super(props)
+    }
+    componentDidMount() {
+        this.props.handleCounts()
+    }
     render() {
-        const menu = (
-            <Menu>
-                <Menu.Item key="0">
-                    <a onClick={() => { console.log('logout...') }}><LogoutOutlined />退出</a>
-                </Menu.Item>
-            </Menu>
-        );
+        const { usernum, ordernum, productnum } = this.props
         return (
             <div className='home'>
-                <Layout>
-                    <Header className="header">
-                        <div className="logo">SortMall</div>
-                        <div className='logout'>
-                            <Dropdown overlay={menu} trigger={['click']}>
-                                <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                                    {getUsername()} <DownOutlined />
-                                </a>
-                            </Dropdown>,
-                        </div>
-                    </Header>
-                    <Layout>
-                        <Sider width={200} className="site-layout-background">
-                            <Menu
-                                mode="inline"
-                                style={{ height: '100%', borderRight: 0 }}
-                            >
-                                <Menu.Item key="1"><HomeOutlined />首页</Menu.Item>
-                                <Menu.Item key="2"><UserAddOutlined />用户管理</Menu.Item>
-                                <Menu.Item key="3"><MenuUnfoldOutlined />分类管理</Menu.Item>
-                            </Menu>
-                        </Sider>
-                        <Layout style={{ padding: '0 24px 24px' }}>
-                            <Breadcrumb style={{ margin: '16px 0' }}>
-                                <Breadcrumb.Item>Home</Breadcrumb.Item>
-                            </Breadcrumb>
-                            <Content
-                                className="site-layout-background"
-                                style={{
-                                    padding: 24,
-                                    margin: 0,
-                                    minHeight: 280,
-                                }}
-                            >
-                                Content
-                            </Content>
-                        </Layout>
-                    </Layout>
-                </Layout>,
+                <CustomLayout>
+                    <Breadcrumb style={{ margin: '16px 0' }}>
+                        <Breadcrumb.Item>首页</Breadcrumb.Item>
+                    </Breadcrumb>
+                    <Content
+                        className="site-layout-background"
+                        style={{
+                            padding: 24,
+                            margin: 0,
+                            minHeight: 280,
+                        }}
+                    >
+                        <Row>
+                            <Col span={8}>
+                                <Card title="用户数" bordered={false} style={{ width: 300 }}>
+                                    <p>{usernum}</p>
+                                </Card>
+                            </Col>
+                            <Col span={8}>
+                                <Card title="商品数" bordered={false} style={{ width: 300 }}>
+                                    <p>{productnum}</p>
+                                </Card></Col>
+                            <Col span={8}>
+                                <Card title="订单数" bordered={false} style={{ width: 300 }}>
+                                    <p>{ordernum}</p>
+                                </Card></Col>
+                        </Row>
+                    </Content>
+                </CustomLayout>
             </div>
         )
     }
 }
-export default Home
+const mapStateToProps = (state) => {
+    return ({
+        usernum: state.get('home').get('usernum'),
+        ordernum: state.get('home').get('ordernum'),
+        productnum: state.get('home').get('productnum')
+    })
+}
+const mapDispatchToProps = (dispatch) => ({
+    handleCounts: () => {
+        dispatch(actionCreator.geCountsAction())
+    }
+})
+export default connect(mapStateToProps, mapDispatchToProps)(Home)

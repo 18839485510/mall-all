@@ -60,7 +60,7 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => ({
     handleCounts: () => {
-        dispatch(actionCreator.geCountsAction())
+        dispatch(actionCreator.getCountsAction())
     }
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

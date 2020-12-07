@@ -4,8 +4,10 @@ import { combineReducers } from 'redux-immutable'
 
 import { reducer as login } from 'pages/login/store'
 import { reducer as home } from 'pages/home/store'
+import { reducer as user } from 'pages/user/store'
 
 export default combineReducers({
     login,
-    home
+    home,
+    user
 })

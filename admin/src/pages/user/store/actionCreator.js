@@ -2,19 +2,17 @@
 import * as types from './actionType.js'
 import api from 'api'
 
-const setCounts = (payload) => {
+const setPages = (payload) => {
     return {
-        type: types.SET_COUNTS,
+        type: types.SET_PAGES,
         payload: payload
     }
 }
-export const getCountsAction = () => {
+export const getPagesAction = () => {
     return async function (dispatch) {
-        const result = await api.getcounts()
-        console.log(result)
-
+        const result = await api.getUserList()
         if (result.code == 0) {
-            dispatch(setCounts(result.data))
+            dispatch(setPages(result.data))
         }
 
     }

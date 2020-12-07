@@ -32,7 +32,9 @@ const request = (url, method, data) => {
             if (data.code == 10) {
                 //没有权限
                 removeUsername()
+                //跳转到登录界面
                 goLogin()
+                //返回警告信息
                 resolve('没有权限')
             } else {
                 resolve(data)

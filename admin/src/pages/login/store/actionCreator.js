@@ -3,7 +3,7 @@ import * as types from './actionType.js'
 import axios from 'axios'
 import { message } from 'antd';
 
-import { saveUsername } from 'utils'
+import { saveUsername, goHome } from 'utils'
 import api from 'api'
 
 const getRequestStart = () => {
@@ -60,7 +60,7 @@ export const getLoginDateAction = (values) => {
             saveUsername(result.data.username)
 
             //跳转至后台页面
-            window.location.href = '/'
+            goHome()
         }
         dispatch(getRequestEnd())
         /*

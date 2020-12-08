@@ -40,6 +40,7 @@ class User extends Component {
                 title: '是否管理员',
                 dataIndex: 'isAdmin',
                 key: 'isAdmin',
+                render: isAdmin => isAdmin ? '是' : '否'
             },
             {
                 title: '是否有效用户',
@@ -81,7 +82,11 @@ class User extends Component {
                             minHeight: 280,
                         }}
                     >
-                        <Table dataSource={dataSource} columns={columns} />;
+                        <Table
+                            rowKey='_id'
+                            dataSource={dataSource}
+                            columns={columns}
+                        />;
                     </Content>
                 </CustomLayout>
             </div>

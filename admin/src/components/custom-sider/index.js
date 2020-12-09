@@ -21,7 +21,7 @@ export default class CustomSider extends Component {
                             <NavLink to='/user'><UserAddOutlined />用户管理</NavLink>
                         </Menu.Item>
                         <Menu.Item key="3">
-                            <NavLink to='/categories'><UserAddOutlined /><MenuUnfoldOutlined />分类管理</NavLink>
+                            <NavLink to='/category'><UserAddOutlined /><MenuUnfoldOutlined />分类管理</NavLink>
                         </Menu.Item>
                     </Menu>
                 </Sider>

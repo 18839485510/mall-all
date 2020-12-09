@@ -1,3 +1,4 @@
+import moment from 'moment'
 export const saveUsername = (username) => {
     window.localStorage.setItem('username', username)
 }
@@ -15,3 +16,5 @@ export const goLogin = () => {
 export const goHome = () => {
     window.location.href = '/'
 }
+
+export const formatDate = (date) => moment(date).format('YYYY-MM-DD HH:mm:ss')

@@ -24,8 +24,12 @@ const request = (url, method, data) => {
     return new Promise((resolve, reject) => {
         const options = {
             url: url,
-            method: method,
-            data: data
+            method: method
+        }
+        if (method.toUpperCase() == 'GET') {
+            options.params = data
+        } else {
+            options.data = data
         }
         axios(options).then(result => {
             const data = result.data

@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import Login from 'pages/login'
 import Home from 'pages/home'
 import User from 'pages/user'
+import Category from 'pages/category'
 import NotFound from 'pages/notfound'
 import { getUsername } from 'utils'
 
@@ -22,6 +23,7 @@ class App extends Component {
           <Switch>
             <ProtectRoute exact={true} path='/' component={Home} />
             <ProtectRoute exact={true} path='/user' component={User} />
+            <ProtectRoute path='/category' component={Category} />
             <LoginRoute path='/login' component={Login} />
             <Route path='*' component={NotFound} />
           </Switch>

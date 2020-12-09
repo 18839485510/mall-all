@@ -4,13 +4,29 @@ import * as types from './actionType.js'
 import { fromJS } from 'immutable'
 //定义一个初始化的state
 const defaultState = fromJS({
-    list: []
+    current: 1,
+    total: 0,
+    pageSize: 0,
+    list: [],
+    isFecthing: false
 })
 
 function reducer(state = defaultState, action) {
     if (action.type == types.SET_PAGES) {
-        const { list } = action.payload
-        return state.set('list', list)
+        const { list, current, total, pageSize } = action.payload
+        return state.merge({
+            current: current,
+            total: total,
+            pageSize: pageSize,
+            list: list
+        })
+    }
+    if (action.type == types.GET_USERLIST_START) {
+        console.log('GET_USERLIST_START')
+        return state.set('isFecthing', true)
+    }
+    if (action.type == types.GET_USERLIST_END) {
+        return state.set('isFecthing', false)
     }
     return state
 }

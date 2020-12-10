@@ -41,7 +41,7 @@ class User extends Component {
                     checked={isActive == 1 ? true : false}
                     onChange={(checked) => {
                         console.log(record)
-                        handleUpdateIsActive(record._id, checked ? '1' : 0, current)
+                        handleUpdateIsActive(record._id, checked ? '1' : 0)
                     }}
                 />
             },
@@ -114,8 +114,8 @@ const mapDispatchToProps = (dispatch) => ({
     handlePage: (page) => {
         dispatch(actionCreator.getPagesAction(page))
     },
-    handleUpdateIsActive: (id, newIsActive, page) => {
-        dispatch(actionCreator.UpdateIsActiveAction(id, newIsActive, page))
+    handleUpdateIsActive: (id, newIsActive) => {
+        dispatch(actionCreator.UpdateIsActiveAction(id, newIsActive))
     }
 })
 export default connect(mapStateToProps, mapDispatchToProps)(User)

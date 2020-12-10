@@ -1,0 +1,6 @@
+export const GET_USERLIST_START = 'category@get_userlist_start'
+export const GET_USERLIST_END = 'category@get_userlist_end'
+export const SET_PAGES = 'category@set_pages'
+export const SET_ICON = 'category@set_icon'
+export const SET_ICON_ERR = 'category@set_icon_err'
+export const SET_CATEGORIES = 'category@set_categories'

@@ -37,10 +37,11 @@ export const getPagesAction = (page) => {
     }
 }
 
-export const UpdateIsActiveAction = (id, newIsActive, page) => {
-    return async function (dispatch) {
+export const UpdateIsActiveAction = (id, newIsActive) => {
+    return async function (dispatch, getState) {
+        dispatch(getUserListStart())
+        const page = getState().get('category').get('current')
         try {
-            dispatch(getUserListStart())
             const result = await api.getUpdateIsActive({
                 id: id,
                 isActive: newIsActive,

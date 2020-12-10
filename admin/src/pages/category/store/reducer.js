@@ -8,7 +8,13 @@ const defaultState = fromJS({
     total: 0,
     pageSize: 0,
     list: [],
-    isFecthing: false
+    isFecthing: false,
+    icon: '',
+    iconValidate: {
+        help: '',
+        validateStatus: ''
+    },
+    categories: []
 })
 
 function reducer(state = defaultState, action) {
@@ -26,6 +32,24 @@ function reducer(state = defaultState, action) {
     }
     if (action.type == types.GET_USERLIST_END) {
         return state.set('isFecthing', false)
+    }
+    if (action.type == types.SET_ICON) {
+        return state.merge({
+            icon: action.payload,
+            iconValidate: fromJS({
+                help: '',
+                validateStatus: ''
+            })
+        })
+    }
+    if (action.type == types.SET_ICON_ERR) {
+        return state.set('iconValidate', fromJS({
+            help: '请上传手机分类图标',
+            validateStatus: 'error'
+        }))
+    }
+    if (action.type == types.SET_CATEGORIES) {
+        return state.set('categories', action.payload)
     }
     return state
 }

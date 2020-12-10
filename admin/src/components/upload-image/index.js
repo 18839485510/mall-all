@@ -1,11 +1,14 @@
-import React, { Component } from 'react'
-import { Upload, message } from 'antd';
+import React, { Component, Fragment } from 'react'
+import { Upload, message, Modal } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 
-function getBase64(img, callback) {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
+function getBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
 }
 
 function beforeUpload(file) {
@@ -23,46 +26,88 @@ class UploadImage extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            loading: false,
+            previewVisible: false,
+            previewImage: '',
+            previewTitle: '',
+            fileList: []
         }
         this.handleChange = this.handleChange.bind(this)
+        this.handleCancel = this.handleCancel.bind(this)
+        this.handlePreview = this.handlePreview.bind(this)
     }
-    handleChange(info) {
-        console.log(info)
-        if (info.file.status === 'uploading') {
-            this.setState({ loading: true });
-            return;
+    handleCancel() {
+        this.setState({
+            previewVisible: false
+        });
+    }
+
+    async handlePreview(file) {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
         }
-        if (info.file.status === 'done') {
-            // Get this url from response in real world.
-            getBase64(info.file.originFileObj, imageUrl =>
-                this.setState(() => ({
-                    imageUrl,
-                    loading: false,
-                }), () => { this.props.getImageUrl(info.file.response.url) }),
-            );
+
+        this.setState({
+            previewImage: file.url || file.preview,
+            previewVisible: true,
+            previewTitle: file.name || file.url.substring(file.url.lastIndexOf('/') + 1),
+        });
+    };
+
+    handleChange({ fileList }) {
+        const imageUrlStr = fileList.map(item => {
+            if (item.response && item.response.status == 'done') {
+                return item.response.url
+            }
+        }).join(',')
+        this.props.getImageUrlList(imageUrlStr)
+        this.setState({ fileList });
+    }
+    static getDerivedStateFromProps(props, state) {
+        if (state.fileList.length > 0) {
+            return null
+        } else {
+            return {
+                fileList: props.fileList
+            }
         }
+
+    }
+    componentDidMount() {
+        this.setState({
+            fileList: []
+        })
     }
     render() {
-        const { loading, imageUrl } = this.state;
+        const { previewVisible, previewImage, fileList, previewTitle } = this.state;
+        const { maxLength, action } = this.props;
         const uploadButton = (
             <div>
-                {loading ? <LoadingOutlined /> : <PlusOutlined />}
+                <PlusOutlined />
                 <div style={{ marginTop: 8 }}>Upload</div>
             </div>
         );
         return (
-            <Upload
-                name="file"
-                listType="picture-card"
-                className="avatar-uploader"
-                showUploadList={false}
-                action="/v1/categories/icons"
-                beforeUpload={beforeUpload}
-                onChange={this.handleChange}
-            >
-                {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-            </Upload>
+            <Fragment>
+                <Upload
+                    name='file'
+                    action={action}
+                    listType="picture-card"
+                    fileList={fileList}
+                    beforeUpload={beforeUpload}
+                    onPreview={this.handlePreview}
+                    onChange={this.handleChange}
+                >
+                    {fileList.length >= maxLength ? null : uploadButton}
+                </Upload>
+                <Modal
+                    visible={previewVisible}
+                    title={previewTitle}
+                    footer={null}
+                    onCancel={this.handleCancel}
+                >
+                    <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+            </Fragment>
         )
     }
 }

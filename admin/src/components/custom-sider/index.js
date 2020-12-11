@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Layout, Menu } from 'antd';
-import { LogoutOutlined, HomeOutlined, UserAddOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { LogoutOutlined, HomeOutlined, UserAddOutlined, MenuUnfoldOutlined, InteractionOutlined, CheckSquareOutlined } from '@ant-design/icons';
 import { NavLink } from 'react-router-dom'
 
 import './index.less'
@@ -21,7 +21,13 @@ export default class CustomSider extends Component {
                             <NavLink to='/user'><UserAddOutlined />用户管理</NavLink>
                         </Menu.Item>
                         <Menu.Item key="3">
-                            <NavLink to='/category'><UserAddOutlined /><MenuUnfoldOutlined />分类管理</NavLink>
+                            <NavLink to='/category'><MenuUnfoldOutlined />分类管理</NavLink>
+                        </Menu.Item>
+                        <Menu.Item key="4">
+                            <NavLink to='/attr'><InteractionOutlined />属性管理</NavLink>
+                        </Menu.Item>
+                        <Menu.Item key="5">
+                            <NavLink to='/product'><CheckSquareOutlined />商品管理</NavLink>
                         </Menu.Item>
                     </Menu>
                 </Sider>

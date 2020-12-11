@@ -3,26 +3,38 @@ import * as types from './actionType.js'
 import api from 'api'
 import { message } from 'antd'
 
-const getUserListStart = () => {
+const getPageRequestStart = () => {
     return {
-        type: types.GET_USERLIST_START
+        type: types.PAGE_REQUEST_START
     }
 }
-const getUserListEnd = () => {
+
+const getPageRequestEnd = () => {
     return {
-        type: types.GET_USERLIST_END
+        type: types.PAGE_REQUEST_END
     }
 }
+
 const setPages = (payload) => {
     return {
         type: types.SET_PAGES,
         payload: payload
     }
 }
+
+const setCategories = (payload) => ({
+    type: types.SET_CATEGORIES,
+    payload: payload
+})
+
+const setIconErr = () => ({
+    type: types.SET_ICON_ERR
+})
+
 export const getPagesAction = (page) => {
     return async function (dispatch) {
         try {
-            dispatch(getUserListStart())
+            dispatch(getPageRequestStart())
             const result = await api.getCategoryList({
                 page: page
             })
@@ -34,14 +46,14 @@ export const getPagesAction = (page) => {
         } catch (e) {
             message.error('网络请求失败', 1)
         } finally {
-            dispatch(getUserListEnd())
+            dispatch(getPageRequestEnd())
         }
     }
 }
 
 export const getUpdateNameAction = (id, newName) => {
     return async function (dispatch, getState) {
-        dispatch(getUserListStart())
+        dispatch(getPageRequestStart())
         const page = getState().get('category').get('current')
         try {
             const result = await api.UpdateCategoriesName({
@@ -58,14 +70,15 @@ export const getUpdateNameAction = (id, newName) => {
         } catch (e) {
             message.error('网络请求失败', 1)
         } finally {
-            dispatch(getUserListEnd())
+            dispatch(getPageRequestEnd())
         }
     }
 
 }
+
 export const getUpdateMobileNameAction = (id, newName) => {
     return async function (dispatch, getState) {
-        dispatch(getUserListStart())
+        dispatch(getPageRequestStart())
         const page = getState().get('category').get('current')
         try {
             const result = await api.UpdateCategoriesMobileName({
@@ -82,14 +95,15 @@ export const getUpdateMobileNameAction = (id, newName) => {
         } catch (e) {
             message.error('网络请求失败', 1)
         } finally {
-            dispatch(getUserListEnd())
+            dispatch(getPageRequestEnd())
         }
     }
 
 }
+
 export const getUpdateIsShowAction = (id, newIsShow) => {
     return async function (dispatch, getState) {
-        dispatch(getUserListStart())
+        dispatch(getPageRequestStart())
         const page = getState().get('category').get('current')
         try {
             const result = await api.UpdateCategoriesIsShow({
@@ -106,14 +120,15 @@ export const getUpdateIsShowAction = (id, newIsShow) => {
         } catch (e) {
             message.error('网络请求失败', 1)
         } finally {
-            dispatch(getUserListEnd())
+            dispatch(getPageRequestEnd())
         }
     }
 
 }
+
 export const getUpdateIsFloorAction = (id, newIsFloor) => {
     return async function (dispatch, getState) {
-        dispatch(getUserListStart())
+        dispatch(getPageRequestStart())
         const page = getState().get('category').get('current')
         try {
             const result = await api.UpdateCategoriesIsFloor({
@@ -130,14 +145,15 @@ export const getUpdateIsFloorAction = (id, newIsFloor) => {
         } catch (e) {
             message.error('网络请求失败', 1)
         } finally {
-            dispatch(getUserListEnd())
+            dispatch(getPageRequestEnd())
         }
     }
 
 }
+
 export const getUpdateOrderAction = (id, newOrder) => {
     return async function (dispatch, getState) {
-        dispatch(getUserListStart())
+        dispatch(getPageRequestStart())
         const page = getState().get('category').get('current')
         try {
             const result = await api.UpdateCategoriesOrder({
@@ -154,7 +170,7 @@ export const getUpdateOrderAction = (id, newOrder) => {
         } catch (e) {
             message.error('网络请求失败', 1)
         } finally {
-            dispatch(getUserListEnd())
+            dispatch(getPageRequestEnd())
         }
     }
 
@@ -164,9 +180,7 @@ export const setIconAction = (payload) => ({
     type: types.SET_ICON,
     payload: payload
 })
-const setIconErr = () => ({
-    type: types.SET_ICON_ERR
-})
+
 export const getValidateAction = () => {
     return function (dispatch, getState) {
         const icon = getState().get('category').get('icon')
@@ -176,11 +190,9 @@ export const getValidateAction = () => {
         }
     }
 }
-const setCategories = (payload) => ({
-    type: types.SET_CATEGORIES,
-    payload: payload
-})
-export const getSaveAction = (values) => {
+
+//提交新增、更改
+export const getSaveAction = (values, id) => {
     return async function (dispatch, getState) {
         try {
             const icon = getState().get('category').get('icon')
@@ -189,9 +201,16 @@ export const getSaveAction = (values) => {
                 return
             }
             values.icon = icon
-            const result = await api.addCategory(values)
+            let request = api.addCategory
+            let actionMessage = '添加分类成功'
+            if (id) {
+                values.id = id
+                request = api.uadateCategory
+                actionMessage = '修改分类成功'
+            }
+            const result = await request(values)
             if (result.code == 0) {
-                message.success('添加分类成功', 1)
+                message.success(actionMessage, 1)
                 dispatch(setCategories(result.data))
             } else {
                 message.error(result.message, 1)
@@ -202,10 +221,13 @@ export const getSaveAction = (values) => {
         }
     }
 }
+
 export const getLevelCategoriesAction = () => {
     return async function (dispatch) {
         try {
-            const result = await api.getLevelCategories()
+            const result = await api.getLevelCategories({
+                leval: 2
+            })
             if (result.code == 0) {
                 dispatch(setCategories(result.data))
             }

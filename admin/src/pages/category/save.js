@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Layout, Breadcrumb, Form, Input, Button, Select, Result } from 'antd';
+import { Layout, Breadcrumb, Form, Input, Button, Select } from 'antd';
 import { connect } from 'react-redux'
 const { Option } = Select;
 const { Content } = Layout;
@@ -70,7 +70,7 @@ class CategorySave extends Component {
                     <Breadcrumb style={{ margin: '16px 0' }}>
                         <Breadcrumb.Item>首页</Breadcrumb.Item>
                         <Breadcrumb.Item>分类</Breadcrumb.Item>
-                        <Breadcrumb.Item>添加分类</Breadcrumb.Item>
+                        <Breadcrumb.Item>{this.state.id ? '修改分类' : '添加分类'}</Breadcrumb.Item>
                     </Breadcrumb>
                     <Content
                         className="site-layout-background"
@@ -83,7 +83,7 @@ class CategorySave extends Component {
                         <Form
                             {...layout}
                             name="control-hooks"
-                            onFinish={handleSave}
+                            onFinish={(values) => { handleSave(values, this.state.id) }}
                             onFinishFailed={handleValidate}
                             ref={this.formRef}
                         >
@@ -159,8 +159,8 @@ const mapDispatchToProps = (dispatch) => ({
     handleIcon: (icon) => {
         dispatch(actionCreator.setIconAction(icon))
     },
-    handleSave: (values) => {
-        dispatch(actionCreator.getSaveAction(values))
+    handleSave: (values, id) => {
+        dispatch(actionCreator.getSaveAction(values, id))
     },
     handleValidate: (values) => {
         dispatch(actionCreator.getValidateAction(values))

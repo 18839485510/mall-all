@@ -1,0 +1,5 @@
+export const PAGE_REQUEST_START = 'product@page_request_start'
+export const PAGE_REQUEST_END = 'product@page_request_end'
+export const SET_PAGES = 'product@set_pages'
+export const SET_CATEGORIES = 'product@set_categories'
+export const SET_ALL_ATTRS = 'product@set_all_attrs'

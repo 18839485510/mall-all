@@ -29,7 +29,8 @@ class UploadImage extends Component {
             previewVisible: false,
             previewImage: '',
             previewTitle: '',
-            fileList: []
+            fileList: [],
+            isUpdate: false
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleCancel = this.handleCancel.bind(this)
@@ -60,23 +61,24 @@ class UploadImage extends Component {
             }
         }).join(',')
         this.props.getImageUrlList(imageUrlStr)
-        this.setState({ fileList });
+        this.setState({
+            fileList: fileList,
+            isUpdate: true
+        });
     }
     static getDerivedStateFromProps(props, state) {
-        if (state.fileList.length > 0) {
+        if (state.isUpdate) {
+            //更新时不再将state用父组件的props.fileList进行更新，否则会置空state
             return null
         } else {
+            //根据父组件的props.fileList更新state
             return {
                 fileList: props.fileList
             }
         }
 
     }
-    componentDidMount() {
-        this.setState({
-            fileList: []
-        })
-    }
+
     render() {
         const { previewVisible, previewImage, fileList, previewTitle } = this.state;
         const { maxLength, action } = this.props;

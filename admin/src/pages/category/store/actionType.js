@@ -1,5 +1,5 @@
-export const GET_USERLIST_START = 'category@get_userlist_start'
-export const GET_USERLIST_END = 'category@get_userlist_end'
+export const PAGE_REQUEST_START = 'category@page_request_start'
+export const PAGE_REQUEST_END = 'category@page_request_end'
 export const SET_PAGES = 'category@set_pages'
 export const SET_ICON = 'category@set_icon'
 export const SET_ICON_ERR = 'category@set_icon_err'

@@ -20,9 +20,45 @@ class CategorySave extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            id: this.props.match.params.categoryId
+            id: this.props.match.params.categoryId,
+            icon: '',
+            iconValidate: {
+                help: '',
+                validateStatus: ''
+            },
         }
         this.formRef = React.createRef()
+        this.handleIcon = this.handleIcon.bind(this)
+        this.handleValidate = this.handleValidate.bind(this)
+        this.handleFinish = this.handleFinish.bind(this)
+    }
+    handleIcon(icon) {
+        this.setState({
+            icon: icon,
+            iconValidate: {
+                help: '',
+                validateStatus: ''
+            }
+        })
+    }
+    handleValidate() {
+        this.setState({
+            iconValidate: {
+                help: '请上传手机分类图标',
+                validateStatus: 'error'
+            }
+        })
+    }
+    handleFinish(values) {
+        const { icon, id } = this.state
+        if (!icon) {
+            this.handleValidate()
+        }
+        if (icon) {
+            values.icon = icon
+            values.id = id
+            this.props.handleSave(values)
+        }
     }
     async componentDidMount() {
         if (this.state.id) {
@@ -36,22 +72,18 @@ class CategorySave extends Component {
                     name: data.name,
                     mobileName: data.mobileName
                 })
-                this.props.handleIcon(data.icon)
+                this.handleIcon(data.icon)
             }
         } else {
-            this.props.handleIcon('')
+            this.handleIcon('')
         }
         this.props.handleLevelCategories()
     }
     render() {
         const {
-            handleIcon,
-            iconValidate,
-            handleSave,
             categories,
-            handleValidate,
-            icon
         } = this.props
+        const { iconValidate, icon } = this.state
         let fileList = []
         if (icon) {
             fileList.push({
@@ -83,8 +115,8 @@ class CategorySave extends Component {
                         <Form
                             {...layout}
                             name="control-hooks"
-                            onFinish={(values) => { handleSave(values, this.state.id) }}
-                            onFinishFailed={handleValidate}
+                            onFinish={this.handleFinish}
+                            onFinishFailed={this.handleValidate}
                             ref={this.formRef}
                         >
                             <Form.Item
@@ -128,10 +160,10 @@ class CategorySave extends Component {
                             <Form.Item
                                 required={true}
                                 label="手机分类图标"
-                                {...iconValidate.toJS()}
+                                {...iconValidate}
                             >
                                 <UploadImage
-                                    getImageUrlList={handleIcon}
+                                    getImageUrlList={this.handleIcon}
                                     maxLength={3}
                                     action={CATEGORY_ICON_UPLOAD_ADDRESS}
                                     fileList={fileList}
@@ -151,19 +183,11 @@ class CategorySave extends Component {
     }
 }
 const mapStateToProps = (state) => ({
-    iconValidate: state.get('category').get('iconValidate'),
     categories: state.get('category').get('categories'),
-    icon: state.get('category').get('icon'),
 })
 const mapDispatchToProps = (dispatch) => ({
-    handleIcon: (icon) => {
-        dispatch(actionCreator.setIconAction(icon))
-    },
-    handleSave: (values, id) => {
-        dispatch(actionCreator.getSaveAction(values, id))
-    },
-    handleValidate: (values) => {
-        dispatch(actionCreator.getValidateAction(values))
+    handleSave: (values) => {
+        dispatch(actionCreator.getSaveAction(values))
     },
     handleLevelCategories: () => {
         dispatch(actionCreator.getLevelCategoriesAction())

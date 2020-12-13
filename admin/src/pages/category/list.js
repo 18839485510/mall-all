@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Layout, Breadcrumb, Table, Button, Input, Switch, InputNumber } from 'antd';
+import { Layout, Breadcrumb, Table, Button, Input, Switch, InputNumber, Image } from 'antd';
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
@@ -65,7 +65,7 @@ class CategoryList extends Component {
                 dataIndex: 'icon',
                 key: 'icon',
                 width: '15%',
-                render: icon => <img width="60px" height="60px" style={{ borderRadius: "10%" }} src={icon}></img>
+                render: icon => <Image width={50} height={50} src={icon} />
             },
             {
                 title: '是否显示',
@@ -125,20 +125,12 @@ class CategoryList extends Component {
         return (
             <div className="category-list">
                 <CustomLayout>
-                    <div style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        lineHeight: "53px"
-                    }}>
-                        <Breadcrumb style={{ margin: '16px 0' }}>
-                            <Breadcrumb.Item>首页</Breadcrumb.Item>
-                            <Breadcrumb.Item>分类管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>分类列表</Breadcrumb.Item>
-                        </Breadcrumb>
-                        <Link to='/category/save'>
-                            <Button type="primary">新增</Button>
-                        </Link>
-                    </div>
+
+                    <Breadcrumb style={{ margin: '16px 0' }}>
+                        <Breadcrumb.Item>首页</Breadcrumb.Item>
+                        <Breadcrumb.Item>分类管理</Breadcrumb.Item>
+                        <Breadcrumb.Item>分类列表</Breadcrumb.Item>
+                    </Breadcrumb>
                     <Content
                         className="site-layout-background"
                         style={{
@@ -147,6 +139,15 @@ class CategoryList extends Component {
                             minHeight: 280,
                         }}
                     >
+                        <div style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            marginBottom: "20px"
+                        }}>
+                            <Link to='/category/save'>
+                                <Button type="primary">新增</Button>
+                            </Link>
+                        </div>
                         <Table
                             rowKey='_id'
                             dataSource={dataSource}
@@ -165,7 +166,7 @@ class CategoryList extends Component {
                         />;
                     </Content>
                 </CustomLayout>
-            </div>
+            </div >
         )
     }
 }

@@ -10,17 +10,19 @@ const defaultState = fromJS({
     list: [],
     isFecthing: false,
     categories: [],
-    allAttrs: []
+    allAttrs: [],
+    keyword: ''
 })
 
 function reducer(state = defaultState, action) {
     if (action.type == types.SET_PAGES) {
-        const { list, current, total, pageSize } = action.payload
+        const { list, current, total, pageSize, keyword } = action.payload
         return state.merge({
             current: current,
             total: total,
             pageSize: pageSize,
-            list: list
+            list: list,
+            keyword: keyword
         })
     }
     if (action.type == types.PAGE_REQUEST_START) {

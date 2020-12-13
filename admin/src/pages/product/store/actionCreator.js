@@ -34,13 +34,17 @@ const setAllAttrs = (payload) => ({
     payload: payload
 })
 
-export const getPagesAction = (page) => {
+export const getPagesAction = (page, keyword) => {
     return async function (dispatch) {
         try {
             dispatch(getPageRequestStart())
-            const result = await api.getAttrList({
+            const options = {
                 page: page
-            })
+            }
+            if (keyword) {
+                options.keyword = keyword
+            }
+            const result = await api.getProductList(options)
             if (result.code == 0) {
                 dispatch(setPages(result.data))
             } else[
@@ -55,12 +59,90 @@ export const getPagesAction = (page) => {
     }
 }
 
+export const getUpdateIsShowAction = (id, newIsShow) => {
+    return async function (dispatch, getState) {
+        dispatch(getPageRequestStart())
+        const page = getState().get('product').get('current')
+        try {
+            const result = await api.UpdateProductsIsShow({
+                id: id,
+                isShow: newIsShow,
+                page: page
+            })
+            if (result.code == 0) {
+                dispatch(setPages(result.data))
+                message.success('修改成功', 1)
+            } else {
+                message.error(result.message)
+            }
+        } catch (e) {
+            console.log(e)
+            message.error('网络请求失败', 1)
+        } finally {
+            dispatch(getPageRequestEnd())
+        }
+    }
+
+}
+
+export const getUpdateStatusAction = (id, newStatus) => {
+    return async function (dispatch, getState) {
+        dispatch(getPageRequestStart())
+        const page = getState().get('product').get('current')
+        try {
+            const result = await api.UpdateProductsStatus({
+                id: id,
+                status: newStatus,
+                page: page
+            })
+            if (result.code == 0) {
+                dispatch(setPages(result.data))
+                message.success('修改成功', 1)
+            } else {
+                message.error(result.message)
+            }
+        } catch (e) {
+            console.log(e)
+            message.error('网络请求失败', 1)
+        } finally {
+            dispatch(getPageRequestEnd())
+        }
+    }
+
+}
+
+export const getUpdateIsHotAction = (id, newIsHot) => {
+    return async function (dispatch, getState) {
+        dispatch(getPageRequestStart())
+        const page = getState().get('product').get('current')
+        try {
+            const result = await api.UpdateProductsIsHot({
+                id: id,
+                isHot: newIsHot,
+                page: page
+            })
+            if (result.code == 0) {
+                dispatch(setPages(result.data))
+                message.success('修改成功', 1)
+            } else {
+                message.error(result.message)
+            }
+        } catch (e) {
+            console.log(e)
+            message.error('网络请求失败', 1)
+        } finally {
+            dispatch(getPageRequestEnd())
+        }
+    }
+
+}
+
 export const getUpdateOrderAction = (id, newOrder) => {
     return async function (dispatch, getState) {
         dispatch(getPageRequestStart())
-        const page = getState().get('attr').get('current')
+        const page = getState().get('product').get('current')
         try {
-            const result = await api.UpdateAttrsOrder({
+            const result = await api.UpdateProductsOrder({
                 id: id,
                 order: newOrder,
                 page: page
@@ -82,15 +164,14 @@ export const getUpdateOrderAction = (id, newOrder) => {
 }
 
 //提交新增、更改
-export const getSaveAction = (values, id) => {
-    return async function (dispatch) {
+export const getSaveAction = (values) => {
+    return async function () {
         try {
-            let request = api.addAttr
-            let actionMessage = '添加属性成功'
-            if (id) {
-                values.id = id
-                request = api.uadateAttr
-                actionMessage = '修改属性成功'
+            let request = api.addProduct
+            let actionMessage = '添加商品成功'
+            if (values.id) {
+                request = api.uadateProduct
+                actionMessage = '修改商品成功'
             }
             const result = await request(values)
             if (result.code == 0) {

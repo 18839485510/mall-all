@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
-import { Layout, Breadcrumb, Table, Button, InputNumber } from 'antd';
+import { Layout, Breadcrumb, Table, Button, InputNumber, Divider, Switch, Input } from 'antd';
+
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 const { Content } = Layout;
+const { Search } = Input
 
 import { actionCreator } from './store'
 import CustomLayout from 'components/custom-layout'
 
 class ProductList extends Component {
     componentDidMount() {
-        //this.props.handlePage(1)
+        this.props.handlePage(1)
     }
     render() {
         const {
@@ -20,24 +22,76 @@ class ProductList extends Component {
             pageSize,
             handlePage,
             isFecthing,
-            handleUpdatOrder
+            keyword,
+            handleUpdateIsShow,
+            handleUpdateStatus,
+            handleUpdateIsHot,
+            handleUpdateOrder,
         } = this.props
         const dataSource = list
         const columns = [
             {
-                title: '名称',
+                title: '商品名称',
                 dataIndex: 'name',
-                key: 'name',
+                ellipsis: true,
+                width: "45%",
+                render: (name) => {
+                    const reg = new RegExp(`${keyword}`, 'ig')
+                    const html = name.replace(reg, `<b style="color:red">${keyword}</b>`)
+                    return <span dangerouslySetInnerHTML={{ __html: html }}></span>
+                }
+            },
+            {
+                title: '是否首页显示',
+                dataIndex: 'isShow',
+                key: 'isShow',
+                width: '10%',
+                render: (isShow, record) => <Switch
+                    checkedChildren="是"
+                    unCheckedChildren="否"
+                    checked={isShow == 1 ? true : false}
+                    onChange={(checked) => {
+                        handleUpdateIsShow(record._id, checked ? '1' : 0)
+                    }}
+                />
+            },
+            {
+                title: '上架/下架',
+                dataIndex: 'status',
+                key: 'status',
+                width: '10%',
+                render: (status, record) => <Switch
+                    checkedChildren="上架"
+                    unCheckedChildren="下架"
+                    checked={status == 1 ? true : false}
+                    onChange={(checked) => {
+                        handleUpdateStatus(record._id, checked ? '1' : 0)
+                    }}
+                />
+            },
+            {
+                title: '是否热卖',
+                dataIndex: 'isHot',
+                key: 'isHot',
+                width: '10%',
+                render: (isHot, record) => <Switch
+                    checkedChildren="是"
+                    unCheckedChildren="否"
+                    checked={isHot == 1 ? true : false}
+                    onChange={(checked) => {
+                        handleUpdateIsHot(record._id, checked ? '1' : 0)
+                    }}
+                />
             },
             {
                 title: '排序',
                 dataIndex: 'order',
-                key: 'order',
+                width: '15%',
                 render: (order, record) => <InputNumber
                     defaultValue={order}
                     onBlur={(ev) => {
                         if (ev.target.value !== order) {
-                            handleUpdatOrder(record._id, ev.target.value)
+                            handleUpdateOrder(record._id, ev.target.value)
                         }
                     }}
                 >
@@ -45,8 +99,11 @@ class ProductList extends Component {
             },
             {
                 title: '操作',
+                width: '10%',
                 render: (text, record) => <span>
                     <Link to={'/product/save/' + record._id}>修改</Link>
+                    <Divider type="vertical" />
+                    <Link to={'/product/detail/' + record._id}>查看</Link>
                 </span>
 
             },
@@ -54,20 +111,12 @@ class ProductList extends Component {
         return (
             <div className="product-list">
                 <CustomLayout>
-                    <div style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        lineHeight: "53px"
-                    }}>
-                        <Breadcrumb style={{ margin: '16px 0' }}>
-                            <Breadcrumb.Item>首页</Breadcrumb.Item>
-                            <Breadcrumb.Item>商品管理</Breadcrumb.Item>
-                            <Breadcrumb.Item>商品列表</Breadcrumb.Item>
-                        </Breadcrumb>
-                        <Link to='/product/save'>
-                            <Button type="primary">新增</Button>
-                        </Link>
-                    </div>
+
+                    <Breadcrumb style={{ margin: '16px 0' }}>
+                        <Breadcrumb.Item>首页</Breadcrumb.Item>
+                        <Breadcrumb.Item>商品管理</Breadcrumb.Item>
+                        <Breadcrumb.Item>商品列表</Breadcrumb.Item>
+                    </Breadcrumb>
                     <Content
                         className="site-layout-background"
                         style={{
@@ -76,6 +125,22 @@ class ProductList extends Component {
                             minHeight: 280,
                         }}
                     >
+                        <div style={{
+                            display: "flex",
+                            justifyContent: 'space-between',
+                            marginBottom: "20px"
+                        }}>
+                            <Search
+                                placeholder="请输入商品名称关键字"
+                                allowClear
+                                onSearch={(value) => { handlePage(1, value) }}
+                                style={{ width: 400 }}
+                                enterButton
+                            />
+                            <Link to='/product/save'>
+                                <Button type="primary">新增</Button>
+                            </Link>
+                        </div>
                         <Table
                             rowKey='_id'
                             dataSource={dataSource}
@@ -86,7 +151,7 @@ class ProductList extends Component {
                                 total: total,
                                 showSizeChanger: false,
                             }}
-                            onChange={(pagination) => { handlePage(pagination.current) }}
+                            onChange={(pagination) => { handlePage(pagination.current, keyword) }}
                             loading={{
                                 spinning: isFecthing,
                                 tip: '数据加载中...'
@@ -103,13 +168,21 @@ const mapStateToProps = (state) => ({
     current: state.get('product').get('current'),
     total: state.get('product').get('total'),
     pageSize: state.get('product').get('pageSize'),
-    isFecthing: state.get('product').get('isFecthing')
+    isFecthing: state.get('product').get('isFecthing'),
+    keyword: state.get('product').get('keyword'),
 })
 const mapDispatchToProps = (dispatch) => ({
-    handlePage: (page) => {
-        dispatch(actionCreator.getPagesAction(page))
+    handlePage: (page, keyword) => {
+        dispatch(actionCreator.getPagesAction(page, keyword))
     },
-    handleUpdatOrder: (id, newOrder) => {
+    handleUpdateIsShow: (id, newIsShow) => {
+        dispatch(actionCreator.getUpdateIsShowAction(id, newIsShow))
+    }, handleUpdateStatus: (id, newStatus) => {
+        dispatch(actionCreator.getUpdateStatusAction(id, newStatus))
+    }, handleUpdateIsHot: (id, newIsHot) => {
+        dispatch(actionCreator.getUpdateIsHotAction(id, newIsHot))
+    },
+    handleUpdateOrder: (id, newOrder) => {
         dispatch(actionCreator.getUpdateOrderAction(id, newOrder))
     }
 })

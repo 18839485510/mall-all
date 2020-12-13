@@ -27,10 +27,6 @@ const setCategories = (payload) => ({
     payload: payload
 })
 
-const setIconErr = () => ({
-    type: types.SET_ICON_ERR
-})
-
 export const getPagesAction = (page) => {
     return async function (dispatch) {
         try {
@@ -176,35 +172,16 @@ export const getUpdateOrderAction = (id, newOrder) => {
 
 }
 
-export const setIconAction = (payload) => ({
-    type: types.SET_ICON,
-    payload: payload
+export const clearList = () => ({
+    type: types.CLEAR_LIST
 })
-
-export const getValidateAction = () => {
-    return function (dispatch, getState) {
-        const icon = getState().get('category').get('icon')
-        if (!icon) {
-            dispatch(setIconErr())
-            return
-        }
-    }
-}
-
 //提交新增、更改
-export const getSaveAction = (values, id) => {
-    return async function (dispatch, getState) {
+export const getSaveAction = (values) => {
+    return async function (dispatch) {
         try {
-            const icon = getState().get('category').get('icon')
-            if (!icon) {
-                dispatch(setIconErr())
-                return
-            }
-            values.icon = icon
             let request = api.addCategory
             let actionMessage = '添加分类成功'
-            if (id) {
-                values.id = id
+            if (values.id) {
                 request = api.uadateCategory
                 actionMessage = '修改分类成功'
             }
@@ -212,6 +189,7 @@ export const getSaveAction = (values, id) => {
             if (result.code == 0) {
                 message.success(actionMessage, 1)
                 dispatch(setCategories(result.data))
+                dispatch(clearList())
             } else {
                 message.error(result.message, 1)
             }

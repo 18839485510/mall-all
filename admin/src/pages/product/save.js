@@ -5,7 +5,8 @@ const { Content } = Layout;
 const { Option } = Select;
 import CustomLayout from 'components/custom-layout'
 import UploadImage from 'components/upload-image'
-import { PRODUCT_IMAGE_UPLOAD_ADDRESS } from 'api/config.js'
+import RichEditor from 'components/rich-editor'
+import { PRODUCT_IMAGE_UPLOAD_ADDRESS, PRODUCT_DETAIL_IMAGES_ADDRESS } from 'api/config.js'
 import { actionCreator } from './store';
 import api from 'api'
 
@@ -20,7 +21,7 @@ class ProductSave extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            id: this.props.match.params.attrId,
+            id: this.props.match.params.productId,
             targetKeys: [],
             selectedKeys: [],
             mainImage: '',
@@ -32,7 +33,8 @@ class ProductSave extends Component {
             imagesValidate: {
                 help: '',
                 validateStatus: ''
-            }
+            },
+            detail: ''
         }
         this.formRef = React.createRef()
         this.handleChange = this.handleChange.bind(this)
@@ -40,7 +42,8 @@ class ProductSave extends Component {
         this.handleMainImage = this.handleMainImage.bind(this)
         this.handleImages = this.handleImages.bind(this)
         this.handleFinish = this.handleFinish.bind(this)
-        this.handleFinishFailed = this.handleFinishFailed.bind(this)
+        this.handleValidate = this.handleValidate.bind(this)
+        this.handleDetail = this.handleDetail.bind(this)
     }
     handleChange(nextTargetKeys, direction, moveKeys) {
         this.setState({ targetKeys: nextTargetKeys });
@@ -68,19 +71,21 @@ class ProductSave extends Component {
         })
     }
     handleFinish(values) {
-        const { targetKeys, mainImage, images } = this.state
+        const { targetKeys, mainImage, images, detail, id } = this.state
         if (targetKeys.length > 0) {
             values.attrs = targetKeys.join(',')
         }
-        this.handleFinishFailed()
+        this.handleValidate()
         if (mainImage && images) {
             values.mainImage = mainImage
-            values.image = images
-            this.props.handleSave(values, this.state.id)
+            values.images = images
+            values.detail = detail
+            values.id = id
+            this.props.handleSave(values)
         }
 
     }
-    handleFinishFailed() {
+    handleValidate() {
         const { mainImage, images } = this.state
         if (!mainImage) {
             this.setState({
@@ -99,11 +104,45 @@ class ProductSave extends Component {
             })
         }
     }
-    componentDidMount() {
+    handleDetail(detail) {
+        this.setState({
+            detail: detail
+        })
+    }
+    async componentDidMount() {
         //获取分类数据
         this.props.handleLevelCategories()
         //获取属性
         this.props.handleAllAttrs()
+
+        if (this.state.id) {
+            //编辑商品
+            const result = await api.getProductsDetail({
+                id: this.state.id
+            })
+            if (result.code == '0') {
+                //回填数据
+                const data = result.data
+                this.formRef.current.setFieldsValue({
+                    category: data.category._id,
+                    name: data.name,
+                    description: data.description,
+                    price: data.price,
+                    stock: data.stock,
+                    payNums: data.payNums
+                })
+                this.setState({
+                    targetKeys: data.attrs.map(attr => attr._id),
+                    mainImage: data.mainImage,
+                    images: data.images,
+                    detail: data.detail
+                });
+
+                //this.handleIcon(data.icon)
+            }
+        } else {
+
+        }
     }
     render() {
         const {
@@ -118,17 +157,55 @@ class ProductSave extends Component {
         }))
         const {
             targetKeys,
+            mainImage,
+            images,
             selectedKeys,
             mainImageValidate,
             imagesValidate,
+            id,
+            detail
         } = this.state
+        let mainImagefileList = []
+        if (mainImage) {
+            mainImagefileList.push({
+                uid: '-1',
+                name: 'image.png',
+                status: 'done',
+                url: mainImage
+            })
+        } else {
+            mainImagefileList = []
+        }
+        let imagesfileList = []
+        if (images) {
+            imagesfileList = images.split(',').map((url, index) => ({
+                uid: index,
+                name: index + '-image.png',
+                status: 'done',
+                url: url,
+                response: {
+                    status: "done",
+                    url: url
+                }
+            }))
+            /*
+            imagesfileList.push({
+                uid: '-1',
+                name: 'image.png',
+                status: 'done',
+                url: mainImage
+            })
+            */
+        } else {
+            imagesfileList = []
+        }
         return (
             <div className='attr-save'>
                 <CustomLayout>
                     <Breadcrumb style={{ margin: '16px 0' }}>
                         <Breadcrumb.Item>首页</Breadcrumb.Item>
                         <Breadcrumb.Item>商品</Breadcrumb.Item>
-                        <Breadcrumb.Item>{this.state.id ? '编辑商品' : '添加商品'}</Breadcrumb.Item>
+                        <Breadcrumb.Item>{id ? '编辑商品' : '添加商品'}</Breadcrumb.Item>
                     </Breadcrumb>
                     <Content
                         className="site-layout-background"
@@ -148,7 +225,7 @@ class ProductSave extends Component {
                                 payNums: 0,
                             }}
                             onFinish={this.handleFinish}
-                            onFinishFailed={this.handleFinishFailed}
+                            onFinishFailed={this.handleValidate}
                         >
                             <Form.Item
                                 name="category"
@@ -241,7 +318,7 @@ class ProductSave extends Component {
                                     action={PRODUCT_IMAGE_UPLOAD_ADDRESS}
                                     getImageUrlList={this.handleMainImage}
                                     maxLength={1}
-                                    fileList={[]}
+                                    fileList={mainImagefileList}
                                 />
                             </Form.Item>
                             <Form.Item
@@ -253,18 +330,23 @@ class ProductSave extends Component {
                                     getImageUrlList={this.handleImages}
                                     maxLength={3}
                                     action={PRODUCT_IMAGE_UPLOAD_ADDRESS}
-                                    fileList={[]}
+                                    fileList={imagesfileList}
                                 />
                             </Form.Item>
                             <Form.Item
                                 label="商品详情"
                                 required={false}
+                                wrapperCol={{ span: 16 }}
                                 rules={[{
                                     required: false,
                                     message: '请输入商品详情'
                                 }]}
                             >
-                                <Input />
+                                <RichEditor
+                                    data={detail}
+                                    uploadUrl={PRODUCT_DETAIL_IMAGES_ADDRESS}
+                                    getData={this.handleDetail}
+                                />
                             </Form.Item>
                             <Form.Item {...tailLayout}>
                                 <Button type="primary" htmlType="submit">
@@ -283,10 +365,8 @@ const mapStateToProps = (state) => ({
     allAttrs: state.get('product').get('allAttrs')
 })
 const mapDispatchToProps = (dispatch) => ({
-
-    handleSave: (values, id) => {
-        console.log(values)
-        //dispatch(actionCreator.getSaveAction(values, id))
+    handleSave: (values) => {
+        dispatch(actionCreator.getSaveAction(values))
     },
     handleLevelCategories: () => {
         dispatch(actionCreator.getLevelCategoriesAction())

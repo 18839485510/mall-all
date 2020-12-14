@@ -1,12 +1,25 @@
 const path = require('path');
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { type } = require('os');
+
+//生成HtmlWebpackPlugin的配置项
+const getHtmlConfig = (name, title) => ({
+    template: './src/view/' + name + '.html',
+    filename: name + '.html',
+    title: title,
+    //inject:'true',//script标签写在哪里，默认为body标签里
+    hash: 'true',//给生成的文件添加一个额外的唯一的hash标识
+    chunks: ['common', name]
+})
 module.exports = {
     entry: {//对象写法指定需要打包的入口文件
         //chunk名称:入口文件路径
-        index: './src/pages/index/index.js'
+        common: './src/pages/common/index.js',
+        index: './src/pages/index/index.js',
+        list: './src/pages/list/index.js'
     },
     output: {
         filename: 'js/[name]-[chunkhash].bundle.js',
@@ -84,17 +97,15 @@ module.exports = {
         ]
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            //模板文件
-            template: './src/view/index.html',
-            filename: 'index.html',
-            //inject:'true',//script标签写在哪里，默认为body标签里
-            hash: 'true',//给生成的文件添加一个额外的唯一的hash标识
-            chunks: ['index']
-        }),
+        new HtmlWebpackPlugin(getHtmlConfig('index', '商城-首页')),
+        new HtmlWebpackPlugin(getHtmlConfig('list', '商城-列表页')),
         new MiniCssExtractPlugin({
             filename: 'css/[name].[fullhash].css'
         }),
-        new CleanWebpackPlugin()
+        new CleanWebpackPlugin(),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery'
+        })
     ]
 };

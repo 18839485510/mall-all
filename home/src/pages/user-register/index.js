@@ -25,7 +25,7 @@ var page = {
     },
     submit: function () {
 
-        //获取表单数据
+        //1获取表单数据
         var formData = {
             phone: $('input[name="phone"]').val(),
             verifyCode: $('input[name="verify-code"]').val(),
@@ -33,20 +33,26 @@ var page = {
             repassword: $('input[name="repassword"]').val(),
         }
 
-        //验证
+        //2验证
         var result = this.validate(formData)
         if (result.status) {
-            //验证成功
+            //3验证成功
             formErr.hide()
-
             //向后台发送请求
-            api.register(formData,function(){},function(){})
-
+            api.register({
+                data: formData,
+                success: function (result) {
+                    console.log(result)
+                },
+                error: function (msg) {
+                    formErr.show(msg)
+                }
+            }
+            )
         } else {
             //验证失败
             formErr.show(result.msg)
         }
-
     },
     validate: function (formData) {
         var result = {
@@ -60,7 +66,7 @@ var page = {
         }
         //格式验证
         if (!_utils.validate(formData.phone, 'phone')) {
-            result.msg = '手机号不能为空'
+            result.msg = '手机号格式不正确'
             return result
         }
         if (!_utils.validate(formData.verifyCode, 'require')) {
@@ -81,7 +87,7 @@ var page = {
             result.msg = '密码格式不正确'
             return result
         }
-        if(formData.password !==formData.repassword){
+        if (formData.password !== formData.repassword) {
             result.msg = '两次密码不一致'
             return result
         }

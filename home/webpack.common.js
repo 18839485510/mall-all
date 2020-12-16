@@ -23,6 +23,7 @@ module.exports = {
         'user-login': './src/pages/user-login/index.js',
         'user-dynamic-login': './src/pages/user-dynamic-login/index.js',
         'user-register': './src/pages/user-register/index.js',
+        'result': './src/pages/result/index.js',
     },
     output: {
         filename: 'js/[name]-[chunkhash].bundle.js',
@@ -105,6 +106,7 @@ module.exports = {
         new HtmlWebpackPlugin(getHtmlConfig('user-login', '用户登录')),
         new HtmlWebpackPlugin(getHtmlConfig('user-dynamic-login', '用户动态登录')),
         new HtmlWebpackPlugin(getHtmlConfig('user-register', '用户注册')),
+        new HtmlWebpackPlugin(getHtmlConfig('result', '结果提示')),
         new MiniCssExtractPlugin({
             filename: 'css/[name].[fullhash].css'
         }),

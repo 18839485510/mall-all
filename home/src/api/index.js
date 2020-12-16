@@ -40,6 +40,7 @@ const request = (options) => {
         ...params,
         success: function (result) {
             if (result.code == 0) {
+                options.success && options.success(result)
             } else if (result.code == 1) {
                 options.error && options.error(result.message)
             } else if (result.code == 10) {

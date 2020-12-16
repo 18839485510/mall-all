@@ -6,5 +6,6 @@ export const API_CONFIG = {
     login: ['/users/login', 'post'],
     getcounts: ['/counts', 'get'],
     logout: ['/users/logout', 'get'],
-    register:['/users','post']
+    register:['/users','post'],
+    getVerifyCodeRequest:['/users/registerVerifyCode','get']
 }

@@ -7,23 +7,30 @@ module.exports = {
         if (type == 'phone') {
             return /^1[35789]\d{9}$/.test(value)
         }
+        //验证手机验证码
         if (type == 'verifyCode') {
             return /^\d{6}$/.test(value)
         }
+        //验证密码
         if (type == 'password') {
             return /^\w{3,6}$/.test(value)
         }
+        //验证验验证码
         if (type == 'captchaCode') {
             return /^[a-zA-Z0-9]{4}$/.test(value)
+        }
+        //验证用户名
+        if (type == 'username') {
+            return /^[a-z0-9][a-z0-9_]{2,10}$/.test(value)
         }
     },
     goLogin: function () {
         window.location.href = '/user-login.html'
     },
-    getAlertSuccessMsg:function(msg){
+    getAlertSuccessMsg: function (msg) {
         alert(msg)
     },
-    goResult:function(type){
+    goResult: function (type) {
         window.location.href = './result.html?type=' + type
     },
     getParamFromUrl: function (key) {

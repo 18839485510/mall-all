@@ -64,7 +64,7 @@ var page = {
             api.register({
                 data: formData,
                 success: function (result) {
-                   utils.goResult('register')
+                    utils.goResult('register')
                 },
                 error: function (msg) {
                     formErr.show(msg)
@@ -118,7 +118,7 @@ var page = {
     },
     getCaptcha: function () {
         var _this = this
-        api.getcaptcha({
+        api.getCaptcha({
             success: function (result) {
                 $('.captcha-img').html(result.data)
             }
@@ -153,7 +153,7 @@ var page = {
         }
         formErr.hide()
 
-        api.getVerifyCodeRequest({
+        api.getRegisterVerifyCode({
             data: {
                 phone: phone,
                 captchaCode: captchaCode

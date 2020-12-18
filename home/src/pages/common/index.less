@@ -48,6 +48,7 @@ a:hover {
     text-align: center;
     box-sizing: border-box;
     padding: 20px 10px;
+    margin-bottom: 20px;
     background-color: #fff;
     transition: all .3s;
 }
@@ -60,9 +61,10 @@ a:hover {
     color: #333;
 }
 
-.product-list .product-item img {
+.product-list .product-item .product-img{
     width: 180px;
     height: 180px;
+    margin-top: 20px;
 }
 
 .product-list .product-item:first-child {
@@ -85,10 +87,13 @@ a:hover {
     float: left;
 }
 
-.product-list .product-item .product-paynums {
+.product-list .product-item .paynums {
     color: rgba(0, 0, 0, .45);
-    font-size: 12px;
+    font-size: 14px;
     float: right;
+}
+.product-price::before {
+    content: "¥ ";
 }
 
 .loader {
@@ -347,4 +352,12 @@ legend {
 .disable-btn {
     background-color: #ccc;
     cursor: default;
+}
+
+.crumb{
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 10px;
+    color: #888;
+    font-size: 14px;
 }

@@ -109,7 +109,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin(getHtmlConfig('index', '商城-首页')),
-        new HtmlWebpackPlugin(getHtmlConfig('list', '商城-列表页')),
+        new HtmlWebpackPlugin(getHtmlConfig('list', '列表页')),
         new HtmlWebpackPlugin(getHtmlConfig('user-login', '用户登录')),
         new HtmlWebpackPlugin(getHtmlConfig('user-dynamic-login', '用户动态登录')),
         new HtmlWebpackPlugin(getHtmlConfig('user-register', '用户注册')),

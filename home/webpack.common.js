@@ -75,6 +75,13 @@ module.exports = {
                     }
                 }
             },
+            //处理tpl文件
+            {
+                test: /\.tpl$/,
+                use: {
+                    loader: 'html-loader',
+                }
+            },
             {
                 test: /\.less$/,
                 use: [

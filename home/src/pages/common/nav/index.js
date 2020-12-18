@@ -82,7 +82,7 @@ var page = {
         //退出
         $('#logout').on('click', function () {
             api.logout({
-                success: function () {
+                success: function (result) {
                     window.location.reload()
                 }
             })

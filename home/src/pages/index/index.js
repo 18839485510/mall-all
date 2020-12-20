@@ -30,6 +30,10 @@ var page = {
     },
     bindEvent: function () {
         var _this = this
+        this.$win.on('scroll resize load', function () {
+            clearTimeout(_this.$elevator.showElevatorTimer);
+            _this.$elevator.showElevatorTimer = setTimeout(_this.setElevator.bind(_this), 200);
+        });
         //点击电梯到达指定楼层
         this.$elevator.on('click', '.elevator-item', function () {
             var num = _this.$elevatorItems.index(this);
@@ -148,7 +152,35 @@ var page = {
                 _this.$backToTop = _this.$elevator.find('.backToTop')
             }
         })
+    },
+    //获取楼层号
+    getFloorNum() {
+        //默认楼层号
+        var _this = this
+        var num = -1;
+        if (this.$floor) {
+            this.$floor.each(function (index, elem) {
+                num = index;
+                if ($(elem).offset().top > _this.$win.scrollTop() + _this.$win.height() / 2) {
+                    num = index - 1;
+                    return false;
+                }
+            });
+        }
+        return num;
+    },
+    //设置电梯
+    setElevator() {
+        var num = this.getFloorNum();
+        if (num == -1) {
+            this.$elevator.fadeOut();
+        } else {
+            this.$elevator.fadeIn();
+            this.$elevatorItems.removeClass('elevator-active');
+            this.$elevatorItems.eq(num).addClass('elevator-active');
+        }
     }
+
 }
 
 $(function () {

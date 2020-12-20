@@ -1,4 +1,5 @@
 var Hogan = require('hogan.js')
+var modal = require('./modal')
 
 module.exports = {
     validate: function (value, type) {
@@ -45,5 +46,14 @@ module.exports = {
         var template = Hogan.compile(tpl)
         var html = template.render(data)
         return html
-    },    
+    },
+    showErrorMsg: function (msg) {
+        modal.showError(msg)
+    },
+    showSuccessMsg: function (msg) {
+        modal.showSuccess(msg)
+    },
+    showConfirm: function (options) {
+        modal.confirm(options)
+    },
 }

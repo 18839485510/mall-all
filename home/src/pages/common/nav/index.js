@@ -1,6 +1,7 @@
 require('./index.less')
 var api = require("api")
 var utils = require('utils')
+const modal = require('../../../utils/modal')
 var tpl = require('./index.tpl')
 
 var page = {
@@ -9,6 +10,7 @@ var page = {
         this.loadUsername()
         this.loadCartsCount()
         this.bindEvent()
+        return this
     },
     loadUsername: function () {
         var _this = this
@@ -75,3 +77,5 @@ var page = {
 $(function () {
     page.init()
 })
+
+module.exports = page.init()

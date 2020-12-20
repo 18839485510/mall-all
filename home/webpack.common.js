@@ -24,6 +24,10 @@ module.exports = {
         'user-dynamic-login': './src/pages/user-dynamic-login/index.js',
         'user-register': './src/pages/user-register/index.js',
         'result': './src/pages/result/index.js',
+        'detail': './src/pages/detail/index.js',
+        'cart': './src/pages/cart/index.js',
+        'user-center': './src/pages/user-center/index.js',
+        'order-confirm': './src/pages/order-confirm/index.js',
     },
     output: {
         filename: 'js/[name]-[chunkhash].bundle.js',
@@ -114,6 +118,11 @@ module.exports = {
         new HtmlWebpackPlugin(getHtmlConfig('user-dynamic-login', '用户动态登录')),
         new HtmlWebpackPlugin(getHtmlConfig('user-register', '用户注册')),
         new HtmlWebpackPlugin(getHtmlConfig('result', '结果提示')),
+        new HtmlWebpackPlugin(getHtmlConfig('detail', '商品详情')),
+        new HtmlWebpackPlugin(getHtmlConfig('cart', '购物车')),
+        new HtmlWebpackPlugin(getHtmlConfig('user-center', '用户中心')),
+        new HtmlWebpackPlugin(getHtmlConfig('order-confirm', '订单结算')),
+
         new MiniCssExtractPlugin({
             filename: 'css/[name].[fullhash].css'
         }),

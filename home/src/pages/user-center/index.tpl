@@ -15,7 +15,7 @@
             </li>
             <li class="item">
                 <span class="label">
-                    <i class="iconfont icon-Mail"></i>电子邮件
+                    <i class="iconfont icon-email"></i>电子邮件
                 </span>
                 <span class="text">
                     {{email}}
@@ -31,7 +31,7 @@
             </li>
             <li class="item">
                 <span class="label">
-                    <i class="iconfont icon-time"></i>注册时间
+                    <i class="iconfont icon-Time"></i>注册时间
                 </span>
                 <span class="text">
                     {{registerTime}}

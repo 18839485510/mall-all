@@ -76,10 +76,9 @@ var page = {
             $mask.show()
             $largeBox.show()
 
-            $this.on('mousemove', function () {
+            $this.on('mousemove', function (ev) {
                 var l = ev.clientX - $box.offset().left - $mask.width() * 0.5
                 var t = ev.clientY - $box.offset().top - $mask.height() * 0.5 + document.documentElement.scrollTop
-                console.log()
                 if (l < 0) {
                     l = 0
                 } else if (l > $this.width() - $mask.width()) {

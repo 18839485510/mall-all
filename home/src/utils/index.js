@@ -1,5 +1,4 @@
 var Hogan = require('hogan.js')
-var modal = require('./modal')
 
 module.exports = {
     validate: function (value, type) {
@@ -18,13 +17,9 @@ module.exports = {
         if (type == 'password') {
             return /^\w{3,6}$/.test(value)
         }
-        //验证验证码
+        //验证验验证码
         if (type == 'captchaCode') {
             return /^[a-zA-Z0-9]{4}$/.test(value)
-        }
-        //验证邮箱
-        if (type == 'email') {
-            return /^\w+@\w+\.\w{2,6}$/.test(value)
         }
         //验证用户名
         if (type == 'username') {
@@ -50,14 +45,5 @@ module.exports = {
         var template = Hogan.compile(tpl)
         var html = template.render(data)
         return html
-    },
-    showErrorMsg: function (msg) {
-        modal.showError(msg)
-    },
-    showSuccessMsg: function (msg) {
-        modal.showSuccess(msg)
-    },
-    showConfirm: function (options) {
-        modal.confirm(options)
-    },
+    },    
 }
